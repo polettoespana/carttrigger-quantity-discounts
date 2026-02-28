@@ -10,8 +10,6 @@
 
 A lightweight WooCommerce plugin that encourages volume purchasing by showing a customisable cart notice when customers reach a trigger quantity, and automatically applying a discount when they hit the target — no coupons, no JavaScript, no external dependencies.
 
----
-
 ## How it works
 
 Each rule defines two thresholds:
@@ -22,8 +20,6 @@ Cart quantity ──► TARGET   →  discount applied automatically
 ```
 
 When the cart reaches the **trigger**, a personalised message is displayed (cart, product page, or both). When it reaches the **target**, the discount is silently added via WooCommerce's native fee system — no coupon required.
-
----
 
 ## Features
 
@@ -38,25 +34,22 @@ When the cart reaches the **trigger**, a personalised message is displayed (cart
 | 07 | **HPOS compatible** | Full WooCommerce High-Performance Order Storage support declared |
 | 08 | **Zero bloat** | No frontend JavaScript, no external libraries |
 
----
+## Notice template
 
-## Notice variables
+Configure the notice text from **WooCommerce → Quantity Discounts**. The following variables are replaced at runtime:
 
-Use these placeholders inside any notice template:
+```
+{current}   → current quantity in the cart
+{missing}   → units still needed to reach the target
+{target}    → target quantity
+{discount}  → formatted discount value (e.g. 10% or €5.00)
+```
 
-| Variable | Description |
-|----------|-------------|
-| `{current}` | Current quantity in the cart |
-| `{missing}` | Units still needed to reach the target |
-| `{target}` | Target quantity |
-| `{discount}` | Formatted discount value (e.g. `10%` or `€5.00`) |
+Example:
 
-**Example template:**
 ```
 Add {missing} more to get {discount} off your order!
 ```
-
----
 
 ## Coupon conflict modes
 
@@ -66,8 +59,6 @@ Add {missing} more to get {discount} off your order!
 | **Exclusive** | Quantity discount (and its notice) are skipped if any coupon is active |
 | **Best discount wins** | Compares totals — applies quantity discount only if it exceeds the coupon discount |
 
----
-
 ## Requirements
 
 - WordPress **6.0** or later
@@ -76,8 +67,6 @@ Add {missing} more to get {discount} off your order!
 
 Tested with WordPress **6.9.1** and WooCommerce **10.5.2**.
 
----
-
 ## Installation
 
 1. Clone this repository or download the ZIP and upload to `/wp-content/plugins/`.
@@ -85,8 +74,6 @@ Tested with WordPress **6.9.1** and WooCommerce **10.5.2**.
 3. Navigate to **WooCommerce → Quantity Discounts** to configure your rules.
 
 > The plugin is pending review on the [WordPress.org plugin directory](https://wordpress.org/plugins/).
-
----
 
 ## Changelog
 
@@ -111,7 +98,5 @@ Tested with WordPress **6.9.1** and WooCommerce **10.5.2**.
 
 ### 2.0.0
 - Initial public release: trigger/target rules, percentage and fixed discounts, category filtering.
-
----
 
 [GPLv2 or later](https://www.gnu.org/licenses/gpl-2.0.html) — developed by [Poletto 1976 S.L.U.](https://poletto.es)
