@@ -1,0 +1,342 @@
+# Spanish translation – CartTrigger – Quantity Discounts
+# Copyright (C) 2026 Gioacchino Poletto
+# This file is distributed under the same license as the plugin.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: CartTrigger – Quantity Discounts 2.3.1\n"
+"POT-Creation-Date: 2026-02-24\n"
+"PO-Revision-Date: 2026-02-24\n"
+"Language: es_ES\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Manual\n"
+"X-Text-Domain: carttrigger-quantity-discounts\n"
+
+#. Fee label shown in order summary / cart (visible to the customer)
+#: poletto-bottle-discount.php
+#, php-format
+msgid "Discount for %d items"
+msgstr "Descuento por %d productos"
+
+#. Admin save notification
+#: poletto-bottle-discount.php
+msgid "Settings saved."
+msgstr "Configuración guardada."
+
+#. WooCommerce menu item label and admin page title
+#: poletto-bottle-discount.php
+msgid "Quantity Discounts"
+msgstr "Descuentos por Cantidad"
+
+#. Admin page intro description
+#: poletto-bottle-discount.php
+msgid "Each rule defines when to show the notice (trigger) and which discount to apply when the customer reaches the threshold (target). Selecting a parent category automatically includes its subcategories."
+msgstr "Cada regla define cuándo mostrar el aviso (disparador) y qué descuento aplicar cuando el usuario alcanza el umbral (objetivo). Al seleccionar una categoría padre se incluyen automáticamente las subcategorías."
+
+#: poletto-bottle-discount.php
+msgid "Discount rules"
+msgstr "Reglas de descuento"
+
+#. Info box heading – how the discount scope works
+#: poletto-bottle-discount.php
+msgid "How the discount scope works:"
+msgstr "Cómo funciona el ámbito del descuento:"
+
+#. Info box body – scope explanation
+#: poletto-bottle-discount.php
+msgid "\"Entire cart\" applies the percentage to the full cart subtotal. \"Category only\" applies it only to the subtotal of matching items — useful for targeted discounts. Fixed amounts are not affected by scope. When multiple rules share the same Target and Scope, only the highest discount is applied automatically."
+msgstr "\"Todo el carrito\" aplica el porcentaje sobre el subtotal completo del carrito. \"Solo categoría\" lo aplica únicamente sobre el subtotal de los artículos coincidentes — útil para descuentos específicos. Los importes fijos no se ven afectados por el ámbito. Si varias reglas comparten el mismo Objetivo y el mismo Ámbito, se aplica automáticamente el descuento más alto."
+
+#. Info box tip
+#: poletto-bottle-discount.php
+msgid "Tip: for rules with the same Target and Scope, use the same discount value so the {discount} variable shown in the notice always matches what is actually applied."
+msgstr "Consejo: para reglas con el mismo Objetivo y el mismo Ámbito, usa siempre el mismo valor de descuento, así la variable {discount} mostrada en el aviso corresponderá exactamente al descuento aplicado."
+
+#: poletto-bottle-discount.php
+msgid "Trigger (qty)"
+msgstr "Disparador (cant.)"
+
+#: poletto-bottle-discount.php
+msgid "Target (qty)"
+msgstr "Objetivo (cant.)"
+
+#: poletto-bottle-discount.php
+msgid "Discount type"
+msgstr "Tipo de descuento"
+
+#: poletto-bottle-discount.php
+msgid "Value"
+msgstr "Valor"
+
+#: poletto-bottle-discount.php
+msgid "show notice"
+msgstr "mostrar aviso"
+
+#: poletto-bottle-discount.php
+msgid "apply discount"
+msgstr "aplicar descuento"
+
+#: poletto-bottle-discount.php
+msgid "Percentage"
+msgstr "Porcentaje"
+
+#: poletto-bottle-discount.php
+msgid "Fixed"
+msgstr "Fijo"
+
+#. Discount scope: entire cart option
+#: poletto-bottle-discount.php
+msgid "Entire cart"
+msgstr "Todo el carrito"
+
+#. Discount scope: category only option
+#: poletto-bottle-discount.php
+msgid "Category only"
+msgstr "Solo categoría"
+
+#. Descriptive label below the scope select
+#: poletto-bottle-discount.php
+msgid "discount scope"
+msgstr "ámbito del descuento"
+
+#: poletto-bottle-discount.php
+msgid "All products"
+msgstr "Todos los productos"
+
+#: poletto-bottle-discount.php
+msgid "Ctrl+click for multiple categories. Subcategories are included automatically."
+msgstr "Ctrl+clic para varias categorías. Las subcategorías se incluyen automáticamente."
+
+#: poletto-bottle-discount.php
+msgid "Remove"
+msgstr "Eliminar"
+
+#: poletto-bottle-discount.php
+msgid "Add rule"
+msgstr "Añadir regla"
+
+#. Dynamic conflict warning heading
+#: poletto-bottle-discount.php
+msgid "Warning: inconsistent discounts for the same Target."
+msgstr "Atención: descuentos incoherentes para el mismo Objetivo."
+
+#. Dynamic conflict warning body
+#: poletto-bottle-discount.php
+msgid "Two or more rules with the same Target value have different discount amounts. The highest discount will be applied automatically, but the {discount} variable in the notice will reflect the active trigger's value — which may not match the actual discount applied. Recommendation: use the same discount type and value for all rules sharing the same Target."
+msgstr "Dos o más reglas con el mismo valor Objetivo tienen descuentos diferentes. Se aplicará automáticamente el descuento más alto, pero la variable {discount} en el aviso mostrará el valor del disparador activo — que podría no coincidir con el descuento realmente aplicado. Recomendación: usa el mismo tipo y valor de descuento para todas las reglas con el mismo Objetivo."
+
+#: poletto-bottle-discount.php
+msgid "Notice text"
+msgstr "Texto del aviso"
+
+#. Translation plugin detected notice
+#: poletto-bottle-discount.php
+msgid "Translation plugin detected: this text is registered as a translatable string. Translate it from your plugin's interface (WPML → String Translation / Polylang → String Translations)."
+msgstr "Plugin de traducción detectado: este texto está registrado como cadena traducible. Tradúcelo desde la interfaz de tu plugin (WPML → String Translation / Polylang → Traducciones de cadenas)."
+
+#: poletto-bottle-discount.php
+msgid "Available variables:"
+msgstr "Variables disponibles:"
+
+#: poletto-bottle-discount.php
+msgid "= current qty"
+msgstr "= cantidad actual"
+
+#: poletto-bottle-discount.php
+msgid "= items still needed"
+msgstr "= productos que faltan para el objetivo"
+
+#: poletto-bottle-discount.php
+msgid "= target qty"
+msgstr "= cantidad objetivo"
+
+#: poletto-bottle-discount.php
+msgid "= formatted discount (e.g. 10% or €5.00)"
+msgstr "= descuento formateado (p.ej. 10% o 5,00 €)"
+
+#: poletto-bottle-discount.php
+msgid "Notice type"
+msgstr "Tipo de notificación"
+
+#. Notice type field description
+#: poletto-bottle-discount.php
+msgid "Determines WooCommerce semantic behaviour (placement, aria attributes). Use the custom CSS class below to control the visual style."
+msgstr "Determina el comportamiento semántico de WooCommerce (posición, atributos aria). Para el estilo visual usa la clase CSS a continuación."
+
+#: poletto-bottle-discount.php
+msgid "Info (blue)"
+msgstr "Informativa (azul)"
+
+#: poletto-bottle-discount.php
+msgid "Success (green)"
+msgstr "Éxito (verde)"
+
+#: poletto-bottle-discount.php
+msgid "Warning (red)"
+msgstr "Atención (rojo)"
+
+#. Custom CSS class field label
+#: poletto-bottle-discount.php
+msgid "Custom CSS class"
+msgstr "Clase CSS personalizada"
+
+#. Custom CSS class field description
+#: poletto-bottle-discount.php
+msgid "One or more space-separated classes. They are added to the notice container in the frontend so you can style it freely via CSS."
+msgstr "Una o más clases separadas por espacio. Se añaden al contenedor del aviso en el frontend, para que puedas estilizarlo libremente con CSS."
+
+#: poletto-bottle-discount.php
+msgid "Example CSS in your theme:"
+msgstr "Ejemplo CSS en tu tema:"
+
+#. Notice position section
+#: poletto-bottle-discount.php
+msgid "Notice position"
+msgstr "Posición de avisos"
+
+#: poletto-bottle-discount.php
+msgid "Where to show"
+msgstr "Dónde mostrar"
+
+#: poletto-bottle-discount.php
+msgid "Cart / checkout only"
+msgstr "Solo carrito / checkout"
+
+#: poletto-bottle-discount.php
+msgid "Product page only"
+msgstr "Solo página de producto"
+
+#: poletto-bottle-discount.php
+msgid "Cart and product page"
+msgstr "Carrito y página de producto"
+
+#. Cart notice section title
+#: poletto-bottle-discount.php
+msgid "Cart / checkout notice"
+msgstr "Aviso carrito / checkout"
+
+#. Product page notice section title
+#: poletto-bottle-discount.php
+msgid "Product page notice"
+msgstr "Aviso página de producto"
+
+#. Product page notice textarea label
+#: poletto-bottle-discount.php
+msgid "Product page notice text"
+msgstr "Texto del aviso en página de producto"
+
+#. Product page notice textarea description
+#: poletto-bottle-discount.php
+msgid "Leave empty to reuse the cart notice text. Available variables: {current} {missing} {target} {discount}."
+msgstr "Deja vacío para usar el mismo texto del aviso del carrito. Variables disponibles: {current} {missing} {target} {discount}."
+
+#: poletto-bottle-discount.php
+msgid "Note: {current} and {missing} are calculated from the current cart (0 if the cart is empty)."
+msgstr "Nota: {current} y {missing} se calculan sobre el carrito actual (0 si el carrito está vacío)."
+
+#. Product page CSS class field label
+#: poletto-bottle-discount.php
+msgid "Product page CSS class"
+msgstr "Clase CSS página de producto"
+
+#. Product page CSS class field description
+#: poletto-bottle-discount.php
+msgid "One or more space-separated classes, added to the notice container on the product page."
+msgstr "Una o más clases separadas por espacio, añadidas al contenedor del aviso en la página de producto."
+
+#. Plugin list → settings link
+#: poletto-bottle-discount.php
+msgid "Settings"
+msgstr "Ajustes"
+
+#: poletto-bottle-discount.php
+msgid "Save settings"
+msgstr "Guardar configuración"
+
+#: poletto-bottle-discount.php
+msgid "You must keep at least one rule."
+msgstr "Debes mantener al menos una regla."
+
+#. Category/SKU column heading in rules table
+#: poletto-bottle-discount.php
+msgid "Category / SKU"
+msgstr "Categoría / SKU"
+
+#. SKU field placeholder
+#: poletto-bottle-discount.php
+msgid "SKU (e.g. SKU1, SKU2)"
+msgstr "SKU (p.ej. SKU1, SKU2)"
+
+#. SKU field description
+#: poletto-bottle-discount.php
+msgid "Comma-separated SKUs. Takes priority over category when set."
+msgstr "SKU separados por coma. Si se rellena, tiene prioridad sobre la categoría."
+
+#. Behaviour with other discounts section title
+#: poletto-bottle-discount.php
+msgid "Behaviour with other discounts"
+msgstr "Comportamiento con otros descuentos"
+
+#. Conflict info box heading
+#: poletto-bottle-discount.php
+msgid "Discount and notices go together:"
+msgstr "Descuento y avisos van juntos:"
+
+#. Conflict info box body
+#: poletto-bottle-discount.php
+msgid "The selected mode controls both the automatic discount and the visibility of promotional notices in the cart and on the product page. In Exclusive and Best modes, notices are hidden when a coupon is active — so customers are never shown a discount promise that will not be applied."
+msgstr "El modo seleccionado controla tanto la aplicación del descuento automático como la visibilidad de los avisos promocionales en el carrito y en la página de producto. En los modos Exclusivo y Solo el mejor, los avisos se ocultan cuando hay un cupón activo — así el cliente nunca recibe promesas de descuentos que no se aplicarán."
+
+#. Conflict mode field label
+#: poletto-bottle-discount.php
+msgid "Conflict mode"
+msgstr "Modo de conflicto"
+
+#. Conflict mode: Stack option
+#: poletto-bottle-discount.php
+msgid "Stack"
+msgstr "Acumula"
+
+#. Conflict mode: Stack description
+#: poletto-bottle-discount.php
+msgid "The quantity discount is always applied and notices are always shown, regardless of any active coupons (default behaviour)."
+msgstr "El descuento por cantidad se aplica siempre y los avisos se muestran con normalidad, independientemente de los cupones presentes en el carrito (comportamiento predeterminado)."
+
+#. Conflict mode: Exclusive option
+#: poletto-bottle-discount.php
+msgid "Exclusive"
+msgstr "Exclusivo"
+
+#. Conflict mode: Exclusive description
+#: poletto-bottle-discount.php
+msgid "If at least one coupon is active, the quantity discount is skipped and notices are hidden to avoid misleading the customer."
+msgstr "Si hay al menos un cupón activo, el descuento no se aplica y los avisos se ocultan para evitar comunicaciones engañosas al cliente."
+
+#. Conflict mode: Best discount wins option
+#: poletto-bottle-discount.php
+msgid "Best discount wins"
+msgstr "Solo el mejor"
+
+#. Conflict mode: Best discount wins description
+#: poletto-bottle-discount.php
+msgid "The quantity discount is applied only if its amount exceeds the total coupon discount; otherwise coupons take precedence and notices are hidden."
+msgstr "El descuento se aplica solo si su importe supera el total de los cupones activos; de lo contrario, los cupones tienen prioridad y los avisos se ocultan."
+
+#. Theme override warning heading
+#: poletto-bottle-discount.php
+msgid "Warning: custom notice templates detected."
+msgstr "Advertencia: plantillas de aviso personalizadas detectadas."
+
+#. Theme override warning body
+#: poletto-bottle-discount.php
+#, php-format
+msgid "Your theme already overrides: %s. The plugin cannot automatically add support for the custom CSS class in these files."
+msgstr "Tu tema ya tiene un override para: %s. El plugin no puede añadir automáticamente soporte para la clase CSS personalizada en estos archivos."
+
+#. Theme override instructions
+#: poletto-bottle-discount.php
+msgid "To enable the custom CSS class in notices, add these two lines inside the foreach loop of the template:"
+msgstr "Para habilitar la clase CSS personalizada en los avisos, añade estas dos líneas dentro del bucle foreach del template:"
