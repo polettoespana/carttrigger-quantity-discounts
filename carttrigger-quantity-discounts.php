@@ -4,7 +4,7 @@
  * Plugin Name:  CartTrigger – Quantity Discounts
  * Plugin URI:   https://poletto.es/nuestros-servicios/eficiencia/ct-quantity-discount
  * Description:  Cart notice and automatic discount triggered by item quantity, configurable per rule, category, or SKU.
- * Version:      2.3.1
+ * Version:      2.3.2
  * Author:       Poletto 1976 S.L.U.
  * Author URI:   https://poletto.es
  * License:      GPLv2 or later
@@ -12,15 +12,15 @@
  * Text Domain:  carttrigger-quantity-discounts
  * Domain Path:  /languages
  * Requires Plugins: woocommerce
- * WC tested up to: 10.5.2
+ * WC tested up to: 10.5.3
  */
 
 if (! defined('ABSPATH')) {
     exit;
 }
 
-define('PBD_VERSION',    '2.3.1');
-define('PBD_OPTION_KEY', 'pbd_settings');
+define('CTQDS_VERSION',    '2.3.2');
+define('CTQDS_OPTION_KEY', 'ctqds_settings');
 
 // ─────────────────────────────────────────────────────────────────────────────
 // WOOCOMMERCE COMPATIBILITY – HPOS (Custom Order Tables)
@@ -42,11 +42,11 @@ add_action('before_woocommerce_init', function (): void {
 
 // Register translatable strings once translation plugins are ready.
 // Priority 20 ensures WPML/Polylang are already initialised.
-add_action('init', 'pbd_register_translatable_strings', 20);
+add_action('init', 'ctqds_register_translatable_strings', 20);
 
-function pbd_register_translatable_strings(): void
+function ctqds_register_translatable_strings(): void
 {
-    $s        = pbd_get_settings();
+    $s        = ctqds_get_settings();
     $template = $s['notice_template'];
     $product  = $s['product_notice_template'];
 
@@ -71,7 +71,7 @@ function pbd_register_translatable_strings(): void
  * Returns the notice_template translated into the current site language,
  * with support for WPML, Polylang, and a generic filter for other plugins.
  */
-function pbd_get_translated_template(string $template): string
+function ctqds_get_translated_template(string $template): string
 {
     if (function_exists('icl_t')) {
         return icl_t('carttrigger-quantity-discounts', 'notice_template', $template);
@@ -79,16 +79,16 @@ function pbd_get_translated_template(string $template): string
     if (function_exists('pll__')) {
         return pll__($template);
     }
-    return apply_filters('pbd_notice_template', $template);
+    return apply_filters('ctqds_notice_template', $template);
 }
 
 /**
  * Returns the product_notice_template translated. Falls back to notice_template if empty.
  */
-function pbd_get_translated_product_template(string $template, string $fallback): string
+function ctqds_get_translated_product_template(string $template, string $fallback): string
 {
     if (empty($template)) {
-        return pbd_get_translated_template($fallback);
+        return ctqds_get_translated_template($fallback);
     }
     if (function_exists('icl_t')) {
         return icl_t('carttrigger-quantity-discounts', 'product_notice_template', $template);
@@ -96,14 +96,14 @@ function pbd_get_translated_product_template(string $template, string $fallback)
     if (function_exists('pll__')) {
         return pll__($template);
     }
-    return apply_filters('pbd_product_notice_template', $template);
+    return apply_filters('ctqds_product_notice_template', $template);
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
 // SETTINGS
 // ─────────────────────────────────────────────────────────────────────────────
 
-function pbd_get_settings(): array
+function ctqds_get_settings(): array
 {
     $defaults = [
         'rules' => [
@@ -135,7 +135,7 @@ function pbd_get_settings(): array
         'conflict_mode'           => 'stack', // 'stack' | 'skip' | 'best'
     ];
 
-    $saved = get_option(PBD_OPTION_KEY, []);
+    $saved = get_option(CTQDS_OPTION_KEY, []);
     if (empty($saved)) {
         return $defaults;
     }
@@ -162,7 +162,7 @@ function pbd_get_settings(): array
  * @param int[] $cat_ids
  * @return int[]
  */
-function pbd_expand_category_ids(array $cat_ids): array
+function ctqds_expand_category_ids(array $cat_ids): array
 {
     $all = $cat_ids;
     foreach ($cat_ids as $id) {
@@ -181,7 +181,7 @@ function pbd_expand_category_ids(array $cat_ids): array
  * @param array $rule
  * @return string[]
  */
-function pbd_get_rule_skus(array $rule): array
+function ctqds_get_rule_skus(array $rule): array
 {
     $raw = $rule['skus'] ?? [];
     if (is_string($raw)) {
@@ -197,13 +197,13 @@ function pbd_get_rule_skus(array $rule): array
  * @param array $rule
  * @return int
  */
-function pbd_count_qty_for_rule(array $rule): int
+function ctqds_count_qty_for_rule(array $rule): int
 {
     if (! WC()->cart) {
         return 0;
     }
 
-    $skus = pbd_get_rule_skus($rule);
+    $skus = ctqds_get_rule_skus($rule);
 
     if (! empty($skus)) {
         $total = 0;
@@ -218,7 +218,7 @@ function pbd_count_qty_for_rule(array $rule): int
     }
 
     $cat_ids      = array_filter(array_map('intval', (array) ($rule['category_ids'] ?? [])));
-    $expanded_ids = empty($cat_ids) ? [] : pbd_expand_category_ids($cat_ids);
+    $expanded_ids = empty($cat_ids) ? [] : ctqds_expand_category_ids($cat_ids);
 
     $total = 0;
     foreach (WC()->cart->get_cart() as $item) {
@@ -244,13 +244,13 @@ function pbd_count_qty_for_rule(array $rule): int
  * @param array $rule
  * @return float
  */
-function pbd_get_category_subtotal(array $rule): float
+function ctqds_get_category_subtotal(array $rule): float
 {
     if (! WC()->cart) {
         return 0.0;
     }
 
-    $skus = pbd_get_rule_skus($rule);
+    $skus = ctqds_get_rule_skus($rule);
 
     if (! empty($skus)) {
         $total = 0.0;
@@ -265,7 +265,7 @@ function pbd_get_category_subtotal(array $rule): float
     }
 
     $cat_ids      = array_filter(array_map('intval', (array) ($rule['category_ids'] ?? [])));
-    $expanded_ids = empty($cat_ids) ? [] : pbd_expand_category_ids($cat_ids);
+    $expanded_ids = empty($cat_ids) ? [] : ctqds_expand_category_ids($cat_ids);
 
     $total = 0.0;
     foreach (WC()->cart->get_cart() as $item) {
@@ -286,7 +286,7 @@ function pbd_get_category_subtotal(array $rule): float
 // FORMATTING
 // ─────────────────────────────────────────────────────────────────────────────
 
-function pbd_format_discount(array $rule): string
+function ctqds_format_discount(array $rule): string
 {
     if ($rule['discount_type'] === 'percent') {
         return $rule['discount_value'] . '%';
@@ -294,7 +294,7 @@ function pbd_format_discount(array $rule): string
     return wc_price($rule['discount_value']);
 }
 
-function pbd_calculate_discount_amount(array $rule, float $subtotal): float
+function ctqds_calculate_discount_amount(array $rule, float $subtotal): float
 {
     if ($rule['discount_type'] === 'percent') {
         return round($subtotal * ((float) $rule['discount_value'] / 100), 2);
@@ -306,12 +306,12 @@ function pbd_calculate_discount_amount(array $rule, float $subtotal): float
 // CART NOTICE
 // ─────────────────────────────────────────────────────────────────────────────
 
-add_action('woocommerce_before_cart',          'pbd_show_cart_notices');
-add_action('woocommerce_before_checkout_form', 'pbd_show_cart_notices');
+add_action('woocommerce_before_cart',          'ctqds_show_cart_notices');
+add_action('woocommerce_before_checkout_form', 'ctqds_show_cart_notices');
 
-function pbd_show_cart_notices(): void
+function ctqds_show_cart_notices(): void
 {
-    $settings = pbd_get_settings();
+    $settings = ctqds_get_settings();
 
     if ($settings['display_location'] === 'product') {
         return;
@@ -324,22 +324,22 @@ function pbd_show_cart_notices(): void
         return;
     }
 
-    $template     = pbd_get_translated_template($settings['notice_template']);
+    $template     = ctqds_get_translated_template($settings['notice_template']);
     $type         = $settings['notice_type'];
-    $notice_class = pbd_sanitize_html_class_list($settings['notice_class'] ?? '');
+    $notice_class = ctqds_sanitize_html_class_list($settings['notice_class'] ?? '');
     $shown        = [];
 
     foreach ($settings['rules'] as $rule) {
         $trigger_qty = (int) $rule['trigger_qty'];
         $target_qty  = (int) $rule['target_qty'];
-        $current_qty = pbd_count_qty_for_rule($rule);
+        $current_qty = ctqds_count_qty_for_rule($rule);
 
         if ($current_qty !== $trigger_qty) {
             continue;
         }
 
         // Deduplicate when two rules share the same trigger, category, and SKU.
-        $sku_key   = implode(',', pbd_get_rule_skus($rule));
+        $sku_key   = implode(',', ctqds_get_rule_skus($rule));
         $dedup_key = $trigger_qty . '_' . ($sku_key ? 'sku:' . $sku_key : implode(',', (array) ($rule['category_ids'] ?? [])));
         if (isset($shown[$dedup_key])) {
             continue;
@@ -349,7 +349,7 @@ function pbd_show_cart_notices(): void
         $missing = $target_qty - $current_qty;
         $text    = str_replace(
             ['{current}', '{missing}', '{target}', '{discount}'],
-            [$current_qty, $missing, $target_qty, pbd_format_discount($rule)],
+            [$current_qty, $missing, $target_qty, ctqds_format_discount($rule)],
             $template
         );
 
@@ -362,7 +362,7 @@ function pbd_show_cart_notices(): void
 /**
  * Sanitises a space-separated list of CSS class names.
  */
-function pbd_sanitize_html_class_list(string $classes): string
+function ctqds_sanitize_html_class_list(string $classes): string
 {
     $parts = preg_split('/\s+/', trim($classes), -1, PREG_SPLIT_NO_EMPTY);
     return implode(' ', array_map('sanitize_html_class', $parts));
@@ -372,15 +372,15 @@ function pbd_sanitize_html_class_list(string $classes): string
 // PRODUCT PAGE NOTICE
 // ─────────────────────────────────────────────────────────────────────────────
 
-add_action('woocommerce_before_add_to_cart_form', 'pbd_show_product_notices');
+add_action('woocommerce_before_add_to_cart_form', 'ctqds_show_product_notices');
 
-function pbd_show_product_notices(): void
+function ctqds_show_product_notices(): void
 {
     if (! is_product()) {
         return;
     }
 
-    $settings = pbd_get_settings();
+    $settings = ctqds_get_settings();
 
     if ($settings['display_location'] === 'cart') {
         return;
@@ -402,9 +402,9 @@ function pbd_show_product_notices(): void
 
     $raw_tpl  = $settings['product_notice_template'];
     $fallback = $settings['notice_template'];
-    $template = pbd_get_translated_product_template($raw_tpl, $fallback);
+    $template = ctqds_get_translated_product_template($raw_tpl, $fallback);
 
-    $notice_class = pbd_sanitize_html_class_list($settings['product_notice_class'] ?? '');
+    $notice_class = ctqds_sanitize_html_class_list($settings['product_notice_class'] ?? '');
 
     // Map notice type to WooCommerce CSS class.
     $type_class_map = [
@@ -419,7 +419,7 @@ function pbd_show_product_notices(): void
     foreach ($settings['rules'] as $rule) {
         $trigger_qty = (int) $rule['trigger_qty'];
         $target_qty  = (int) $rule['target_qty'];
-        $rule_skus   = pbd_get_rule_skus($rule);
+        $rule_skus   = ctqds_get_rule_skus($rule);
         $cat_ids     = array_filter(array_map('intval', (array) ($rule['category_ids'] ?? [])));
 
         // Check match: SKU takes priority over category.
@@ -428,14 +428,14 @@ function pbd_show_product_notices(): void
                 continue;
             }
         } elseif (! empty($cat_ids)) {
-            $expanded = pbd_expand_category_ids($cat_ids);
+            $expanded = ctqds_expand_category_ids($cat_ids);
             if (empty(array_intersect($product_term_ids, $expanded))) {
                 continue;
             }
         }
 
         // Count current cart qty for this rule.
-        $current_qty = pbd_count_qty_for_rule($rule);
+        $current_qty = ctqds_count_qty_for_rule($rule);
 
         // Show only within the trigger_qty ≤ current_qty < target_qty window.
         if ($current_qty < $trigger_qty || $current_qty >= $target_qty) {
@@ -454,7 +454,7 @@ function pbd_show_product_notices(): void
         $missing = $target_qty - $current_qty;
         $text    = str_replace(
             ['{current}', '{missing}', '{target}', '{discount}'],
-            [$current_qty, $missing, $target_qty, pbd_format_discount($rule)],
+            [$current_qty, $missing, $target_qty, ctqds_format_discount($rule)],
             $template
         );
 
@@ -475,9 +475,9 @@ function pbd_show_product_notices(): void
  * The plugin templates add support for the $pbd_class variable
  * passed via wc_add_notice( $msg, $type, ['pbd_class' => 'my-class'] ).
  */
-add_filter('woocommerce_locate_template', 'pbd_locate_notice_template', 10, 3);
+add_filter('woocommerce_locate_template', 'ctqds_locate_notice_template', 10, 3);
 
-function pbd_locate_notice_template(string $template, string $template_name, string $template_path): string
+function ctqds_locate_notice_template(string $template, string $template_name, string $template_path): string
 {
     static $our_templates = ['notices/notice.php', 'notices/success.php'];
 
@@ -508,7 +508,7 @@ function pbd_locate_notice_template(string $template, string $template_name, str
  *
  * @return array{ template: string, has_override: bool, has_pbd_support: bool, path: string }[]
  */
-function pbd_check_theme_notice_templates(): array
+function ctqds_check_theme_notice_templates(): array
 {
     $results = [];
     foreach (['notices/notice.php', 'notices/success.php'] as $tpl) {
@@ -531,15 +531,15 @@ function pbd_check_theme_notice_templates(): array
 // AUTOMATIC DISCOUNT
 // ─────────────────────────────────────────────────────────────────────────────
 
-add_action('woocommerce_cart_calculate_fees', 'pbd_apply_quantity_discounts');
+add_action('woocommerce_cart_calculate_fees', 'ctqds_apply_quantity_discounts');
 
-function pbd_apply_quantity_discounts(WC_Cart $cart): void
+function ctqds_apply_quantity_discounts(WC_Cart $cart): void
 {
     if (is_admin() && ! defined('DOING_AJAX')) {
         return;
     }
 
-    $settings = pbd_get_settings();
+    $settings = ctqds_get_settings();
     $subtotal = $cart->get_subtotal();
 
     // For each group (target_qty + category/SKU + scope) apply only the best discount,
@@ -548,18 +548,18 @@ function pbd_apply_quantity_discounts(WC_Cart $cart): void
 
     foreach ($settings['rules'] as $rule) {
         $target_qty  = (int) $rule['target_qty'];
-        $current_qty = pbd_count_qty_for_rule($rule);
+        $current_qty = ctqds_count_qty_for_rule($rule);
 
         if ($current_qty < $target_qty) {
             continue;
         }
 
         $scope     = $rule['discount_scope'] ?? 'cart';
-        $base      = ($scope === 'category') ? pbd_get_category_subtotal($rule) : $subtotal;
+        $base      = ($scope === 'category') ? ctqds_get_category_subtotal($rule) : $subtotal;
         $cat_key   = implode(',', array_map('intval', (array) ($rule['category_ids'] ?? [])));
-        $sku_key   = implode(',', pbd_get_rule_skus($rule));
+        $sku_key   = implode(',', ctqds_get_rule_skus($rule));
         $group_key = $target_qty . '_' . ($sku_key ? 'sku:' . $sku_key : 'cat:' . $cat_key) . '_' . $scope;
-        $amount    = pbd_calculate_discount_amount($rule, $base);
+        $amount    = ctqds_calculate_discount_amount($rule, $base);
 
         if (! isset($best[$group_key]) || $amount > $best[$group_key]['amount']) {
             $best[$group_key] = [
@@ -583,8 +583,8 @@ function pbd_apply_quantity_discounts(WC_Cart $cart): void
             }
 
             if ($conflict_mode === 'best') {
-                $our_total       = array_sum(array_column($best, 'amount'));
-                $coupon_discount = (float) $cart->get_discount_total();
+                $our_total       = round(array_sum(array_column($best, 'amount')), 2);
+                $coupon_discount = round((float) $cart->get_discount_total(), 2);
                 if ($our_total <= $coupon_discount) {
                     return;
                 }
@@ -600,20 +600,45 @@ function pbd_apply_quantity_discounts(WC_Cart $cart): void
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// ADMIN – ENQUEUE
+// ─────────────────────────────────────────────────────────────────────────────
+
+add_action('admin_enqueue_scripts', 'ctqds_admin_enqueue_scripts');
+
+function ctqds_admin_enqueue_scripts(string $hook): void
+{
+    if ($hook !== 'woocommerce_page_ctqds-settings') {
+        return;
+    }
+    $s = ctqds_get_settings();
+    wp_enqueue_script(
+        'ctqds-admin',
+        plugin_dir_url(__FILE__) . 'assets/js/ctqds-admin.js',
+        [],
+        CTQDS_VERSION,
+        true
+    );
+    wp_localize_script('ctqds-admin', 'ctqdsData', [
+        'ruleCount'  => count($s['rules']),
+        'minRuleMsg' => __('You must keep at least one rule.', 'carttrigger-quantity-discounts'),
+    ]);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // ADMIN – MENU
 // ─────────────────────────────────────────────────────────────────────────────
 
-add_action('admin_menu', 'pbd_register_admin_menu');
+add_action('admin_menu', 'ctqds_register_admin_menu');
 
-function pbd_register_admin_menu(): void
+function ctqds_register_admin_menu(): void
 {
     add_submenu_page(
         'woocommerce',
         __('Quantity Discounts', 'carttrigger-quantity-discounts'),
         __('Quantity Discounts', 'carttrigger-quantity-discounts'),
         'manage_woocommerce',
-        'pbd-settings',
-        'pbd_render_settings_page'
+        'ctqds-settings',
+        'ctqds_render_settings_page'
     );
 }
 
@@ -621,11 +646,11 @@ function pbd_register_admin_menu(): void
 // ADMIN – SETTINGS LINK IN PLUGIN LIST
 // ─────────────────────────────────────────────────────────────────────────────
 
-add_filter('plugin_action_links_poletto-bottle-discount/poletto-bottle-discount.php', 'pbd_add_settings_link');
+add_filter('plugin_action_links_carttrigger-quantity-discounts/carttrigger-quantity-discounts.php', 'ctqds_add_settings_link');
 
-function pbd_add_settings_link(array $links): array
+function ctqds_add_settings_link(array $links): array
 {
-    $url  = admin_url('admin.php?page=pbd-settings');
+    $url  = admin_url('admin.php?page=ctqds-settings');
     $link = '<a href="' . esc_url($url) . '">' . __('Settings', 'carttrigger-quantity-discounts') . '</a>';
     array_unshift($links, $link);
     return $links;
@@ -635,56 +660,56 @@ function pbd_add_settings_link(array $links): array
 // ADMIN – SAVE
 // ─────────────────────────────────────────────────────────────────────────────
 
-add_action('admin_init', 'pbd_handle_save');
+add_action('admin_init', 'ctqds_handle_save');
 
-function pbd_handle_save(): void
+function ctqds_handle_save(): void
 {
     if (
-        ! isset($_POST['pbd_nonce']) ||
-        ! wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['pbd_nonce'])), 'pbd_save') ||
+        ! isset($_POST['ctqds_nonce']) ||
+        ! wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['ctqds_nonce'])), 'ctqds_save') ||
         ! current_user_can('manage_woocommerce')
     ) {
         return;
     }
 
-    $settings = pbd_get_settings();
+    $settings = ctqds_get_settings();
 
     // Notice text and type.
     $settings['notice_template'] = wp_kses_post(
-        wp_unslash($_POST['pbd_notice_template'] ?? $settings['notice_template'])
+        wp_unslash($_POST['ctqds_notice_template'] ?? $settings['notice_template'])
     );
-    $notice_type = sanitize_text_field(wp_unslash($_POST['pbd_notice_type'] ?? 'notice'));
+    $notice_type = sanitize_text_field(wp_unslash($_POST['ctqds_notice_type'] ?? 'notice'));
     $settings['notice_type'] = in_array($notice_type, ['notice', 'success', 'error'], true)
         ? $notice_type
         : 'notice';
 
-    $settings['notice_class'] = pbd_sanitize_html_class_list(
-        sanitize_text_field(wp_unslash($_POST['pbd_notice_class'] ?? ''))
+    $settings['notice_class'] = ctqds_sanitize_html_class_list(
+        sanitize_text_field(wp_unslash($_POST['ctqds_notice_class'] ?? ''))
     );
 
     // Notice position.
-    $location = sanitize_text_field(wp_unslash($_POST['pbd_display_location'] ?? 'cart'));
+    $location = sanitize_text_field(wp_unslash($_POST['ctqds_display_location'] ?? 'cart'));
     $settings['display_location'] = in_array($location, ['cart', 'product', 'both'], true)
         ? $location
         : 'cart';
 
     // Coupon conflict behaviour.
-    $conflict_mode = sanitize_text_field(wp_unslash($_POST['pbd_conflict_mode'] ?? 'stack'));
+    $conflict_mode = sanitize_text_field(wp_unslash($_POST['ctqds_conflict_mode'] ?? 'stack'));
     $settings['conflict_mode'] = in_array($conflict_mode, ['stack', 'skip', 'best'], true)
         ? $conflict_mode
         : 'stack';
 
     // Product page template and class.
     $settings['product_notice_template'] = wp_kses_post(
-        wp_unslash($_POST['pbd_product_notice_template'] ?? '')
+        wp_unslash($_POST['ctqds_product_notice_template'] ?? '')
     );
-    $settings['product_notice_class'] = pbd_sanitize_html_class_list(
-        sanitize_text_field(wp_unslash($_POST['pbd_product_notice_class'] ?? ''))
+    $settings['product_notice_class'] = ctqds_sanitize_html_class_list(
+        sanitize_text_field(wp_unslash($_POST['ctqds_product_notice_class'] ?? ''))
     );
 
     // Rules.
-    $raw_rules = isset($_POST['pbd_rules']) && is_array($_POST['pbd_rules'])
-        ? wp_unslash($_POST['pbd_rules']) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- each field is sanitized individually below
+    $raw_rules = isset($_POST['ctqds_rules']) && is_array($_POST['ctqds_rules'])
+        ? wp_unslash($_POST['ctqds_rules']) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- each field is sanitized individually below
         : [];
 
     $new_rules = [];
@@ -735,28 +760,28 @@ function pbd_handle_save(): void
     }
 
     $settings['rules'] = $new_rules;
-    update_option(PBD_OPTION_KEY, $settings);
+    update_option(CTQDS_OPTION_KEY, $settings);
 
     // Re-register the string in translation plugins after saving.
-    pbd_register_translatable_strings();
+    ctqds_register_translatable_strings();
 
-    add_settings_error('pbd_settings', 'pbd_saved', __('Settings saved.', 'carttrigger-quantity-discounts'), 'updated');
+    add_settings_error('ctqds_settings', 'ctqds_saved', __('Settings saved.', 'carttrigger-quantity-discounts'), 'updated');
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
 // ADMIN – SETTINGS PAGE
 // ─────────────────────────────────────────────────────────────────────────────
 
-function pbd_render_settings_page(): void
+function ctqds_render_settings_page(): void
 {
     if (! current_user_can('manage_woocommerce')) {
         return;
     }
 
-    settings_errors('pbd_settings');
+    settings_errors('ctqds_settings');
 
     // Warn if the theme overrides notice templates without $pbd_class support.
-    $tpl_status = pbd_check_theme_notice_templates();
+    $tpl_status = ctqds_check_theme_notice_templates();
     $missing     = array_filter($tpl_status, fn($t) => $t['has_override'] && ! $t['has_pbd_support']);
     if (! empty($missing)) : ?>
         <div class="notice notice-warning" style="margin:15px 0;padding:12px 14px;">
@@ -776,13 +801,13 @@ function pbd_render_settings_page(): void
                 <?php esc_html_e('To enable the custom CSS class in notices, add these two lines inside the foreach loop of the template:', 'carttrigger-quantity-discounts'); ?>
             </p>
             <pre style="background:#f6f7f7;padding:10px 12px;margin:0;font-size:12px;border-left:3px solid #dba617;overflow-x:auto;"><?php echo esc_html(
-                '$pbd_class = ! empty( $notice[\'data\'][\'pbd_class\'] ) ? \' \' . esc_attr( $notice[\'data\'][\'pbd_class\'] ) : \'\';
-// then add <?php echo $pbd_class; ?> to the class="" attribute of the container'
+                '$ctqds_class = ! empty( $notice[\'data\'][\'pbd_class\'] ) ? \' \' . esc_attr( $notice[\'data\'][\'pbd_class\'] ) : \'\';
+// then add <?php echo esc_attr( $ctqds_class ); ?> to the class="" attribute of the container'
             ); ?></pre>
         </div>
     <?php endif;
 
-    $s = pbd_get_settings();
+    $s = ctqds_get_settings();
 
     $all_cats = get_terms([
         'taxonomy'   => 'product_cat',
@@ -794,7 +819,7 @@ function pbd_render_settings_page(): void
     }
 
     // Category options HTML with no selection (used in the JS template for new rows).
-    $cat_options_base = pbd_build_cat_options($all_cats, []);
+    $cat_options_base = ctqds_build_cat_options($all_cats, []);
     ?>
     <div class="wrap">
         <h1><?php esc_html_e('Quantity Discounts', 'carttrigger-quantity-discounts'); ?></h1>
@@ -803,7 +828,7 @@ function pbd_render_settings_page(): void
         </p>
 
         <form method="post">
-            <?php wp_nonce_field('pbd_save', 'pbd_nonce'); ?>
+            <?php wp_nonce_field('ctqds_save', 'ctqds_nonce'); ?>
 
             <h2 style="margin-top:1.5em;"><?php esc_html_e('Discount rules', 'carttrigger-quantity-discounts'); ?></h2>
 
@@ -831,24 +856,24 @@ function pbd_render_settings_page(): void
                         <tr class="pbd-rule-row" style="vertical-align:top;">
                             <td style="padding:8px 10px;">
                                 <input type="number"
-                                    name="pbd_rules[<?php echo (int) $i; ?>][trigger_qty]"
+                                    name="ctqds_rules[<?php echo (int) $i; ?>][trigger_qty]"
                                     value="<?php echo esc_attr($rule['trigger_qty']); ?>"
                                     min="1" class="small-text" required />
                                 <p class="description" style="margin:3px 0 0;font-size:11px;"><?php esc_html_e('show notice', 'carttrigger-quantity-discounts'); ?></p>
                             </td>
                             <td style="padding:8px 10px;">
                                 <input type="number"
-                                    name="pbd_rules[<?php echo (int) $i; ?>][target_qty]"
+                                    name="ctqds_rules[<?php echo (int) $i; ?>][target_qty]"
                                     value="<?php echo esc_attr($rule['target_qty']); ?>"
                                     min="1" class="small-text" required />
                                 <p class="description" style="margin:3px 0 0;font-size:11px;"><?php esc_html_e('apply discount', 'carttrigger-quantity-discounts'); ?></p>
                             </td>
                             <td style="padding:8px 10px;">
-                                <select name="pbd_rules[<?php echo (int) $i; ?>][discount_type]" style="width:100%;">
+                                <select name="ctqds_rules[<?php echo (int) $i; ?>][discount_type]" style="width:100%;">
                                     <option value="percent" <?php selected($rule['discount_type'], 'percent'); ?>>% <?php esc_html_e('Percentage', 'carttrigger-quantity-discounts'); ?></option>
                                     <option value="fixed" <?php selected($rule['discount_type'], 'fixed'); ?>>€ <?php esc_html_e('Fixed', 'carttrigger-quantity-discounts'); ?></option>
                                 </select>
-                                <select name="pbd_rules[<?php echo (int) $i; ?>][discount_scope]" style="width:100%;margin-top:5px;">
+                                <select name="ctqds_rules[<?php echo (int) $i; ?>][discount_scope]" style="width:100%;margin-top:5px;">
                                     <option value="cart" <?php selected($rule['discount_scope'] ?? 'cart', 'cart'); ?>><?php esc_html_e('Entire cart', 'carttrigger-quantity-discounts'); ?></option>
                                     <option value="category" <?php selected($rule['discount_scope'] ?? 'cart', 'category'); ?>><?php esc_html_e('Category only', 'carttrigger-quantity-discounts'); ?></option>
                                 </select>
@@ -856,24 +881,24 @@ function pbd_render_settings_page(): void
                             </td>
                             <td style="padding:8px 10px;">
                                 <input type="text"
-                                    name="pbd_rules[<?php echo (int) $i; ?>][discount_value]"
+                                    name="ctqds_rules[<?php echo (int) $i; ?>][discount_value]"
                                     value="<?php echo esc_attr($rule['discount_value']); ?>"
                                     class="small-text" required />
                             </td>
                             <td style="padding:8px 10px;">
-                                <select name="pbd_rules[<?php echo (int) $i; ?>][category_ids][]"
+                                <select name="ctqds_rules[<?php echo (int) $i; ?>][category_ids][]"
                                     multiple
                                     style="width:100%;min-height:90px;">
                                     <option value="0" <?php echo empty($rule['category_ids']) ? 'selected' : ''; ?>>
                                         — <?php esc_html_e('All products', 'carttrigger-quantity-discounts'); ?> —
                                     </option>
-                                    <?php echo pbd_build_cat_options($all_cats, $rule['category_ids']); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- output is pre-escaped with esc_html() ?>
+                                    <?php echo wp_kses( ctqds_build_cat_options($all_cats, $rule['category_ids']), ['option' => ['value' => [], 'selected' => []]] ); ?>
                                 </select>
                                 <p class="description" style="margin:3px 0 0;font-size:11px;">
                                     <?php esc_html_e('Ctrl+click for multiple categories. Subcategories are included automatically.', 'carttrigger-quantity-discounts'); ?>
                                 </p>
                                 <input type="text"
-                                    name="pbd_rules[<?php echo (int) $i; ?>][skus]"
+                                    name="ctqds_rules[<?php echo (int) $i; ?>][skus]"
                                     value="<?php echo esc_attr(implode(', ', (array) ($rule['skus'] ?? []))); ?>"
                                     placeholder="<?php esc_attr_e('SKU (e.g. SKU1, SKU2)', 'carttrigger-quantity-discounts'); ?>"
                                     class="widefat"
@@ -937,7 +962,7 @@ function pbd_render_settings_page(): void
                         ];
                         foreach ($conflict_modes as $val => $info) : ?>
                             <label style="display:block;margin-bottom:10px;">
-                                <input type="radio" name="pbd_conflict_mode"
+                                <input type="radio" name="ctqds_conflict_mode"
                                     value="<?php echo esc_attr($val); ?>"
                                     <?php checked($s['conflict_mode'] ?? 'stack', $val); ?> />
                                 <strong><?php echo esc_html($info['label']); ?></strong>
@@ -964,7 +989,7 @@ function pbd_render_settings_page(): void
                         foreach ($locations as $val => $label) :
                         ?>
                             <label style="margin-right:20px;">
-                                <input type="radio" name="pbd_display_location"
+                                <input type="radio" name="ctqds_display_location"
                                     value="<?php echo esc_attr($val); ?>"
                                     <?php checked($s['display_location'] ?? 'cart', $val); ?> />
                                 <?php echo esc_html($label); ?>
@@ -978,10 +1003,10 @@ function pbd_render_settings_page(): void
             <table class="form-table" role="presentation" id="pbd-cart-fields">
                 <tr>
                     <th scope="row">
-                        <label for="pbd_notice_template"><?php esc_html_e('Notice text', 'carttrigger-quantity-discounts'); ?></label>
+                        <label for="ctqds_notice_template"><?php esc_html_e('Notice text', 'carttrigger-quantity-discounts'); ?></label>
                     </th>
                     <td>
-                        <textarea id="pbd_notice_template" name="pbd_notice_template"
+                        <textarea id="ctqds_notice_template" name="ctqds_notice_template"
                             rows="3" class="large-text"><?php echo esc_textarea($s['notice_template']); ?></textarea>
                         <?php if (function_exists('icl_register_string') || function_exists('pll_register_string')) : ?>
                             <p class="description" style="color:#2271b1;">
@@ -1009,7 +1034,7 @@ function pbd_render_settings_page(): void
                         foreach ($notice_types as $val => $label) :
                         ?>
                             <label style="margin-right:20px;">
-                                <input type="radio" name="pbd_notice_type"
+                                <input type="radio" name="ctqds_notice_type"
                                     value="<?php echo esc_attr($val); ?>"
                                     <?php checked($s['notice_type'], $val); ?> />
                                 <?php echo esc_html($label); ?>
@@ -1022,10 +1047,10 @@ function pbd_render_settings_page(): void
                 </tr>
                 <tr>
                     <th scope="row">
-                        <label for="pbd_notice_class"><?php esc_html_e('Custom CSS class', 'carttrigger-quantity-discounts'); ?></label>
+                        <label for="ctqds_notice_class"><?php esc_html_e('Custom CSS class', 'carttrigger-quantity-discounts'); ?></label>
                     </th>
                     <td>
-                        <input type="text" id="pbd_notice_class" name="pbd_notice_class"
+                        <input type="text" id="ctqds_notice_class" name="ctqds_notice_class"
                             value="<?php echo esc_attr($s['notice_class']); ?>"
                             class="regular-text" placeholder="e.g. pbd-notice my-store-notice" />
                         <p class="description">
@@ -1045,10 +1070,10 @@ function pbd_render_settings_page(): void
             <table class="form-table" role="presentation" id="pbd-product-fields">
                 <tr>
                     <th scope="row">
-                        <label for="pbd_product_notice_template"><?php esc_html_e('Product page notice text', 'carttrigger-quantity-discounts'); ?></label>
+                        <label for="ctqds_product_notice_template"><?php esc_html_e('Product page notice text', 'carttrigger-quantity-discounts'); ?></label>
                     </th>
                     <td>
-                        <textarea id="pbd_product_notice_template" name="pbd_product_notice_template"
+                        <textarea id="ctqds_product_notice_template" name="ctqds_product_notice_template"
                             rows="3" class="large-text"
                             placeholder="<?php echo esc_attr($s['notice_template']); ?>"><?php echo esc_textarea($s['product_notice_template']); ?></textarea>
                         <p class="description">
@@ -1061,10 +1086,10 @@ function pbd_render_settings_page(): void
                 </tr>
                 <tr>
                     <th scope="row">
-                        <label for="pbd_product_notice_class"><?php esc_html_e('Product page CSS class', 'carttrigger-quantity-discounts'); ?></label>
+                        <label for="ctqds_product_notice_class"><?php esc_html_e('Product page CSS class', 'carttrigger-quantity-discounts'); ?></label>
                     </th>
                     <td>
-                        <input type="text" id="pbd_product_notice_class" name="pbd_product_notice_class"
+                        <input type="text" id="ctqds_product_notice_class" name="ctqds_product_notice_class"
                             value="<?php echo esc_attr($s['product_notice_class']); ?>"
                             class="regular-text" placeholder="e.g. pbd-promo-product" />
                         <p class="description">
@@ -1082,37 +1107,37 @@ function pbd_render_settings_page(): void
     <template id="pbd-rule-tpl">
         <tr class="pbd-rule-row" style="vertical-align:top;">
             <td style="padding:8px 10px;">
-                <input type="number" name="pbd_rules[__IDX__][trigger_qty]" value="4" min="1" class="small-text" required />
+                <input type="number" name="ctqds_rules[__IDX__][trigger_qty]" value="4" min="1" class="small-text" required />
                 <p class="description" style="margin:3px 0 0;font-size:11px;"><?php esc_html_e('show notice', 'carttrigger-quantity-discounts'); ?></p>
             </td>
             <td style="padding:8px 10px;">
-                <input type="number" name="pbd_rules[__IDX__][target_qty]" value="6" min="1" class="small-text" required />
+                <input type="number" name="ctqds_rules[__IDX__][target_qty]" value="6" min="1" class="small-text" required />
                 <p class="description" style="margin:3px 0 0;font-size:11px;"><?php esc_html_e('apply discount', 'carttrigger-quantity-discounts'); ?></p>
             </td>
             <td style="padding:8px 10px;">
-                <select name="pbd_rules[__IDX__][discount_type]" style="width:100%;">
+                <select name="ctqds_rules[__IDX__][discount_type]" style="width:100%;">
                     <option value="percent">% <?php esc_html_e('Percentage', 'carttrigger-quantity-discounts'); ?></option>
                     <option value="fixed">€ <?php esc_html_e('Fixed', 'carttrigger-quantity-discounts'); ?></option>
                 </select>
-                <select name="pbd_rules[__IDX__][discount_scope]" style="width:100%;margin-top:5px;">
+                <select name="ctqds_rules[__IDX__][discount_scope]" style="width:100%;margin-top:5px;">
                     <option value="cart"><?php esc_html_e('Entire cart', 'carttrigger-quantity-discounts'); ?></option>
                     <option value="category"><?php esc_html_e('Category only', 'carttrigger-quantity-discounts'); ?></option>
                 </select>
                 <p class="description" style="margin:3px 0 0;font-size:11px;"><?php esc_html_e('discount scope', 'carttrigger-quantity-discounts'); ?></p>
             </td>
             <td style="padding:8px 10px;">
-                <input type="text" name="pbd_rules[__IDX__][discount_value]" value="10" class="small-text" required />
+                <input type="text" name="ctqds_rules[__IDX__][discount_value]" value="10" class="small-text" required />
             </td>
             <td style="padding:8px 10px;">
-                <select name="pbd_rules[__IDX__][category_ids][]" multiple style="width:100%;min-height:90px;">
+                <select name="ctqds_rules[__IDX__][category_ids][]" multiple style="width:100%;min-height:90px;">
                     <option value="0" selected>— <?php esc_html_e('All products', 'carttrigger-quantity-discounts'); ?> —</option>
-                    <?php echo $cat_options_base; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- output is pre-escaped with esc_html() ?>
+                    <?php echo wp_kses( $cat_options_base, ['option' => ['value' => [], 'selected' => []]] ); ?>
                 </select>
                 <p class="description" style="margin:3px 0 0;font-size:11px;">
                     <?php esc_html_e('Ctrl+click for multiple categories. Subcategories are included automatically.', 'carttrigger-quantity-discounts'); ?>
                 </p>
                 <input type="text"
-                    name="pbd_rules[__IDX__][skus]"
+                    name="ctqds_rules[__IDX__][skus]"
                     value=""
                     placeholder="<?php esc_attr_e('SKU (e.g. SKU1, SKU2)', 'carttrigger-quantity-discounts'); ?>"
                     class="widefat"
@@ -1129,109 +1154,6 @@ function pbd_render_settings_page(): void
         </tr>
     </template>
 
-    <script>
-        (function() {
-            var idx = <?php echo count($s['rules']); ?>;
-            var tbody = document.getElementById('pbd-rules-body');
-            var tpl = document.getElementById('pbd-rule-tpl');
-            var conflictWarning = document.getElementById('pbd-conflict-warning');
-
-            function pbd_check_conflicts() {
-                var rows = tbody.querySelectorAll('.pbd-rule-row');
-                var groups = {};
-
-                rows.forEach(function(row) {
-                    var targetEl = row.querySelector('input[name$="[target_qty]"]');
-                    var typeEl = row.querySelector('select[name$="[discount_type]"]');
-                    var valueEl = row.querySelector('input[name$="[discount_value]"]');
-                    var scopeEl = row.querySelector('select[name$="[discount_scope]"]');
-                    var skusEl = row.querySelector('input[name$="[skus]"]');
-                    if (!targetEl || !typeEl || !valueEl) {
-                        return;
-                    }
-
-                    var targetVal = targetEl.value.trim();
-                    if (!targetVal) {
-                        return;
-                    }
-
-                    var scopeVal = scopeEl ? scopeEl.value : 'cart';
-                    var skusVal = skusEl ? skusEl.value.trim() : '';
-                    var key = targetVal + '_' + scopeVal + '_' + skusVal;
-
-                    if (!groups[key]) {
-                        groups[key] = [];
-                    }
-                    var normalized = typeEl.value + ':' + parseFloat(valueEl.value.replace(',', '.') || '0');
-                    groups[key].push(normalized);
-                });
-
-                var hasConflict = false;
-                Object.keys(groups).forEach(function(key) {
-                    var unique = groups[key].filter(function(v, i, a) {
-                        return a.indexOf(v) === i;
-                    });
-                    if (unique.length > 1) {
-                        hasConflict = true;
-                    }
-                });
-
-                conflictWarning.style.display = hasConflict ? '' : 'none';
-            }
-
-            document.getElementById('pbd-add-rule').addEventListener('click', function() {
-                var html = tpl.innerHTML.replace(/__IDX__/g, idx++);
-                var tmp = document.createElement('tbody');
-                tmp.innerHTML = html;
-                tbody.appendChild(tmp.firstElementChild);
-                pbd_check_conflicts();
-            });
-
-            tbody.addEventListener('click', function(e) {
-                if (e.target.classList.contains('pbd-remove-row')) {
-                    if (tbody.querySelectorAll('.pbd-rule-row').length > 1) {
-                        e.target.closest('tr').remove();
-                        pbd_check_conflicts();
-                    } else {
-                        alert('<?php echo esc_js(__('You must keep at least one rule.', 'carttrigger-quantity-discounts')); ?>');
-                    }
-                }
-            });
-
-            tbody.addEventListener('input', pbd_check_conflicts);
-            tbody.addEventListener('change', pbd_check_conflicts);
-
-            // Initial check on page load.
-            pbd_check_conflicts();
-
-            // ── Show/hide cart and product sections based on display location ──
-            (function() {
-                var radios = document.querySelectorAll('input[name="pbd_display_location"]');
-                var cartH2 = document.getElementById('pbd-h2-cart');
-                var cartFields = document.getElementById('pbd-cart-fields');
-                var prodH2 = document.getElementById('pbd-h2-product');
-                var prodFields = document.getElementById('pbd-product-fields');
-
-                function syncVisibility() {
-                    var val = (document.querySelector('input[name="pbd_display_location"]:checked') || {}).value || 'cart';
-                    var showCart = val === 'cart' || val === 'both';
-                    var showProd = val === 'product' || val === 'both';
-
-                    [cartH2, cartFields].forEach(function(el) {
-                        if (el) el.style.display = showCart ? '' : 'none';
-                    });
-                    [prodH2, prodFields].forEach(function(el) {
-                        if (el) el.style.display = showProd ? '' : 'none';
-                    });
-                }
-
-                radios.forEach(function(r) {
-                    r.addEventListener('change', syncVisibility);
-                });
-                syncVisibility();
-            })();
-        })();
-    </script>
 <?php
 }
 
@@ -1247,7 +1169,7 @@ function pbd_render_settings_page(): void
  * @param int[]     $selected_ids
  * @return string
  */
-function pbd_build_cat_options($all_cats, array $selected_ids = []): string
+function ctqds_build_cat_options($all_cats, array $selected_ids = []): string
 {
     if (empty($all_cats)) {
         return '';

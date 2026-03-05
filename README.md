@@ -1,7 +1,7 @@
 # CartTrigger – Quantity Discounts
 
 <p>
-  <img src="https://img.shields.io/badge/version-2.3.1-0a0a23?style=flat-square" alt="Version 2.3.1">
+  <img src="https://img.shields.io/badge/version-2.3.2-0a0a23?style=flat-square" alt="Version 2.3.2">
   <img src="https://img.shields.io/badge/WordPress-6.0%2B-3858e9?style=flat-square&logo=wordpress&logoColor=white" alt="WordPress 6.0+">
   <img src="https://img.shields.io/badge/WooCommerce-required-96588a?style=flat-square&logo=woocommerce&logoColor=white" alt="WooCommerce required">
   <img src="https://img.shields.io/badge/PHP-7.4%2B-777bb4?style=flat-square&logo=php&logoColor=white" alt="PHP 7.4+">
@@ -76,6 +76,14 @@ Tested with WordPress **6.9.1** and WooCommerce **10.5.3**.
 > The plugin is pending review on the [WordPress.org plugin directory](https://wordpress.org/plugins/).
 
 ## Changelog
+
+### 2.3.2
+
+- Renamed internal prefix from `pbd_` to `ctqds_` to meet WordPress.org naming requirements (≥ 5 chars).
+- Moved inline admin JavaScript to an enqueued file (`assets/js/ctqds-admin.js`) via `wp_enqueue_script()`.
+- Fixed late escaping on all echoed variables.
+- Fixed folder name in Installation instructions.
+- Removed WordPress.org SVN-only assets (icons) from the plugin ZIP.
 
 ### 2.3.1
 

@@ -5,7 +5,7 @@ Tags: woocommerce, discount, quantity discount, bulk discount
 Requires at least: 6.0
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 2.3.1
+Stable tag: 2.3.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Requires Plugins: woocommerce
@@ -47,7 +47,7 @@ Each discount rule is fully configurable:
 
 == Installation ==
 
-1. Upload the `poletto-bottle-discount` folder to the `/wp-content/plugins/` directory, or install the plugin directly from the WordPress plugin screen.
+1. Upload the `carttrigger-quantity-discounts` folder to the `/wp-content/plugins/` directory, or install the plugin directly from the WordPress plugin screen.
 2. Activate the plugin through the **Plugins** screen in WordPress.
 3. Go to **WooCommerce → Quantity Discounts** to configure your discount rules.
 
@@ -93,6 +93,12 @@ Yes. The plugin declares full HPOS compatibility.
 
 == Changelog ==
 
+= 2.3.2 =
+* Renamed internal prefix to meet WordPress.org naming requirements.
+* Moved admin JavaScript to an enqueued external file.
+* Fixed late escaping on echoed variables.
+* Fixed folder name in installation instructions.
+
 = 2.3.1 =
 * Conflict mode now also suppresses cart and product page notices when a coupon is active (Exclusive and Best modes) — prevents showing a discount promise that would not be applied.
 
@@ -120,6 +126,9 @@ Yes. The plugin declares full HPOS compatibility.
 * Category filtering with automatic subcategory inclusion.
 
 == Upgrade Notice ==
+
+= 2.3.2 =
+Internal code cleanup to comply with WordPress.org review requirements. No breaking changes for end users.
 
 = 2.3.1 =
 Notices are now also suppressed in Exclusive and Best modes when a coupon is active. No breaking changes.
