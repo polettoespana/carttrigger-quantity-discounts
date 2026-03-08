@@ -1,0 +1,5 @@
+# SVN assets (icone e banner per WP.org — non includere nel ZIP)
+svn-assets/
+
+# OS
+.DS_Store
