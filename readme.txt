@@ -3,7 +3,7 @@ Contributors: polettoespana
 Donate link: https://www.paypal.me/polettoespana
 Tags: woocommerce, discount, quantity discount, bulk discount
 Requires at least: 6.0
-Tested up to: 6.9
+Tested up to: 6.9.3
 Requires PHP: 7.4
 Stable tag: 2.3.2
 License: GPLv2 or later
