@@ -8,7 +8,7 @@ Requires PHP: 7.4
 Stable tag: 2.3.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
-WC tested up to: 10.6.1
+WC tested up to: 10.7.0
 Requires Plugins: woocommerce
 
 Show cart notices and apply automatic discounts when customers reach a quantity threshold — configurable per category, or SKU.

@@ -12,7 +12,7 @@
  * Text Domain:  carttrigger-quantity-discounts
  * Domain Path:  /languages
  * Requires Plugins: woocommerce
- * WC tested up to: 10.6.0
+ * WC tested up to: 10.7.0
  */
 
 if (! defined('ABSPATH')) {
