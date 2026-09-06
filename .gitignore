@@ -1,5 +1,11 @@
 # SVN assets (icone e banner per WP.org — non includere nel ZIP)
 svn-assets/
 
-# OS
+# Design-log method (keel) — never shipped, never committed
+design-log/
+.plan/
+
+# OS / tooling
 .DS_Store
+.locks/
+.claude-designlog-hooks.log

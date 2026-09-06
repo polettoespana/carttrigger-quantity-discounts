@@ -1,7 +1,7 @@
 # CartTrigger – Quantity Discounts
 
 <p>
-  <img src="https://img.shields.io/badge/version-2.3.2-0a0a23?style=flat-square" alt="Version 2.3.2">
+  <img src="https://img.shields.io/badge/version-2.3.4-0a0a23?style=flat-square" alt="Version 2.3.4">
   <img src="https://img.shields.io/badge/WordPress-6.0%2B-3858e9?style=flat-square&logo=wordpress&logoColor=white" alt="WordPress 6.0+">
   <img src="https://img.shields.io/badge/WooCommerce-required-96588a?style=flat-square&logo=woocommerce&logoColor=white" alt="WooCommerce required">
   <img src="https://img.shields.io/badge/PHP-7.4%2B-777bb4?style=flat-square&logo=php&logoColor=white" alt="PHP 7.4+">
@@ -65,7 +65,7 @@ Add {missing} more to get {discount} off your order!
 - WooCommerce _(required)_
 - PHP **7.4** or later
 
-Tested with WordPress **6.9.1** and WooCommerce **10.5.3**.
+Tested with WordPress **7.1** and WooCommerce **10.7.0**.
 
 ## Installation
 
@@ -76,6 +76,15 @@ Tested with WordPress **6.9.1** and WooCommerce **10.5.3**.
 > The plugin is pending review on the [WordPress.org plugin directory](https://wordpress.org/plugins/).
 
 ## Changelog
+
+### 2.3.4
+
+- Compatibility: WordPress 7.1.
+- Added `Requires at least` and `Requires PHP` headers to the main plugin file.
+
+### 2.3.3
+
+- Compatibility: WordPress 7.0.
 
 ### 2.3.2
 

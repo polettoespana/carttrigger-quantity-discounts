@@ -4,13 +4,15 @@
  * Plugin Name:  CartTrigger – Quantity Discounts
  * Plugin URI:   https://poletto.es/nuestros-servicios/eficiencia/ct-quantity-discount
  * Description:  Cart notice and automatic discount triggered by item quantity, configurable per rule, category, or SKU.
- * Version:      2.3.3
+ * Version:      2.3.4
  * Author:       Poletto 1976 S.L.U.
  * Author URI:   https://poletto.es
  * License:      GPLv2 or later
  * License URI:  https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:  carttrigger-quantity-discounts
  * Domain Path:  /languages
+ * Requires at least: 6.0
+ * Requires PHP: 7.4
  * Requires Plugins: woocommerce
  * WC tested up to: 10.7.0
  */
@@ -19,7 +21,7 @@ if (! defined('ABSPATH')) {
     exit;
 }
 
-define('CTQDS_VERSION',    '2.3.3');
+define('CTQDS_VERSION',    '2.3.4');
 define('CTQDS_OPTION_KEY', 'ctqds_settings');
 
 // ─────────────────────────────────────────────────────────────────────────────

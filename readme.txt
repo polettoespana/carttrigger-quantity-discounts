@@ -3,9 +3,9 @@ Contributors: polettoespana
 Donate link: https://www.paypal.me/polettoespana
 Tags: woocommerce, discount, quantity discount, bulk discount
 Requires at least: 6.0
-Tested up to: 7.0
+Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 2.3.3
+Stable tag: 2.3.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 WC tested up to: 10.7.0
@@ -93,6 +93,10 @@ Yes. The plugin declares full HPOS compatibility.
 3. Product page — notice displayed below the Add to Cart button.
 
 == Changelog ==
+
+= 2.3.4 =
+* Compatibility: WordPress 7.1.
+* Added Requires at least and Requires PHP headers to the main plugin file.
 
 = 2.3.3 =
 * Compatibility: WordPress 7.0.
